@@ -93,6 +93,34 @@ export function MediaUploader({ onUploaded }: Props) {
         />
       </div>
 
+      <div className="mb-4 flex items-center justify-center gap-2 rounded-full bg-background/40 p-1 border border-gold/20">
+        <button
+          type="button"
+          onClick={() => setVisibility("public")}
+          disabled={uploading}
+          className={`flex-1 inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 font-body-ar text-sm transition-all ${
+            visibility === "public"
+              ? "bg-gold text-primary-foreground shadow-glow"
+              : "text-muted-foreground hover:text-gold"
+          }`}
+        >
+          <Globe className="h-4 w-4" /> عامة — يراها الجميع
+        </button>
+        <button
+          type="button"
+          onClick={() => setVisibility("private")}
+          disabled={uploading}
+          className={`flex-1 inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 font-body-ar text-sm transition-all ${
+            visibility === "private"
+              ? "bg-gold text-primary-foreground shadow-glow"
+              : "text-muted-foreground hover:text-gold"
+          }`}
+        >
+          <Lock className="h-4 w-4" /> خاصة — للعائلة فقط
+        </button>
+      </div>
+
+
       <input
         ref={inputRef}
         type="file"
