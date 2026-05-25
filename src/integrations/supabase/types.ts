@@ -22,6 +22,7 @@ export type Database = {
           path: string
           type: string
           uploader: string | null
+          visibility: string
         }
         Insert: {
           caption?: string | null
@@ -30,6 +31,7 @@ export type Database = {
           path: string
           type: string
           uploader?: string | null
+          visibility?: string
         }
         Update: {
           caption?: string | null
@@ -38,6 +40,7 @@ export type Database = {
           path?: string
           type?: string
           uploader?: string | null
+          visibility?: string
         }
         Relationships: []
       }

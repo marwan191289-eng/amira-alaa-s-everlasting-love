@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Upload, Loader2, ImagePlus } from "lucide-react";
+import { Upload, Loader2, ImagePlus, Globe, Lock } from "lucide-react";
 
 interface Props {
   onUploaded?: () => void;
 }
+
+type Visibility = "public" | "private";
 
 export function MediaUploader({ onUploaded }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -12,6 +14,7 @@ export function MediaUploader({ onUploaded }: Props) {
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [uploader, setUploader] = useState("");
   const [caption, setCaption] = useState("");
+  const [visibility, setVisibility] = useState<Visibility>("public");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -39,6 +42,7 @@ export function MediaUploader({ onUploaded }: Props) {
           type: isVideo ? "video" : "image",
           caption: caption || null,
           uploader: uploader || null,
+          visibility,
         });
         if (dbErr) throw dbErr;
 
@@ -88,6 +92,34 @@ export function MediaUploader({ onUploaded }: Props) {
           disabled={uploading}
         />
       </div>
+
+      <div className="mb-4 flex items-center justify-center gap-2 rounded-full bg-background/40 p-1 border border-gold/20">
+        <button
+          type="button"
+          onClick={() => setVisibility("public")}
+          disabled={uploading}
+          className={`flex-1 inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 font-body-ar text-sm transition-all ${
+            visibility === "public"
+              ? "bg-gold text-primary-foreground shadow-glow"
+              : "text-muted-foreground hover:text-gold"
+          }`}
+        >
+          <Globe className="h-4 w-4" /> عامة — يراها الجميع
+        </button>
+        <button
+          type="button"
+          onClick={() => setVisibility("private")}
+          disabled={uploading}
+          className={`flex-1 inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 font-body-ar text-sm transition-all ${
+            visibility === "private"
+              ? "bg-gold text-primary-foreground shadow-glow"
+              : "text-muted-foreground hover:text-gold"
+          }`}
+        >
+          <Lock className="h-4 w-4" /> خاصة — للعائلة فقط
+        </button>
+      </div>
+
 
       <input
         ref={inputRef}

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MediaUploader } from "@/components/MediaUploader";
-import { Play, Trash2, Lock } from "lucide-react";
+import { Play, Trash2, Lock, Globe } from "lucide-react";
 import { PasswordGate } from "@/components/PasswordGate";
 import { isUnlocked, lock } from "@/lib/wedding-auth";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -41,6 +41,7 @@ type DbMedia = {
   type: "image" | "video";
   caption: string | null;
   uploader: string | null;
+  visibility: "public" | "private";
   created_at: string;
 };
 
@@ -129,6 +130,26 @@ function Index() {
     [unlocked],
   );
 
+  const toggleVisibility = useCallback(
+    async (item: DbMedia) => {
+      if (!unlocked) return;
+      const next: "public" | "private" =
+        item.visibility === "public" ? "private" : "public";
+      const { error } = await supabase
+        .from("media")
+        .update({ visibility: next })
+        .eq("id", item.id);
+      if (error) {
+        alert("تعذر تغيير الحالة: " + error.message);
+        return;
+      }
+      setDbMedia((prev) =>
+        prev.map((m) => (m.id === item.id ? { ...m, visibility: next } : m)),
+      );
+    },
+    [unlocked],
+  );
+
   const fetchMedia = useCallback(async () => {
     const { data, error } = await supabase
       .from("media")
@@ -152,9 +173,14 @@ function Index() {
     };
   }, [fetchMedia]);
 
+  const visibleMedia = useMemo(
+    () => (unlocked ? dbMedia : dbMedia.filter((m) => m.visibility === "public")),
+    [dbMedia, unlocked],
+  );
+
   const uploadedImages: GalleryItem[] = useMemo(
     () =>
-      dbMedia
+      visibleMedia
         .filter((m) => m.type === "image")
         .map((m) => ({
           id: m.id,
@@ -163,12 +189,12 @@ function Index() {
           uploader: m.uploader ?? undefined,
           dbItem: m,
         })),
-    [dbMedia],
+    [visibleMedia],
   );
 
   const uploadedVideos: VideoItem[] = useMemo(
     () =>
-      dbMedia
+      visibleMedia
         .filter((m) => m.type === "video")
         .map((m) => ({
           id: m.id,
@@ -177,7 +203,7 @@ function Index() {
           uploader: m.uploader ?? undefined,
           dbItem: m,
         })),
-    [dbMedia],
+    [visibleMedia],
   );
 
   const allImages = [...uploadedImages, ...seedImages];
@@ -344,19 +370,44 @@ function Index() {
                 )}
               </button>
               {unlocked && img.dbItem && (
-                <button
-                  type="button"
-                  onClick={() => deleteMedia(img.dbItem!)}
-                  className="absolute top-2 left-2 z-10 rounded-full bg-background/80 p-2 text-destructive opacity-0 backdrop-blur transition-all hover:bg-destructive hover:text-destructive-foreground group-hover:opacity-100"
-                  aria-label="حذف"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 opacity-0 transition-all group-hover:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => deleteMedia(img.dbItem!)}
+                    className="rounded-full bg-background/80 p-2 text-destructive backdrop-blur transition-all hover:bg-destructive hover:text-destructive-foreground"
+                    aria-label="حذف"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleVisibility(img.dbItem!)}
+                    className="rounded-full bg-background/80 p-2 text-gold backdrop-blur transition-all hover:bg-gold hover:text-primary-foreground"
+                    aria-label={
+                      img.dbItem.visibility === "public" ? "اجعلها خاصة" : "اجعلها عامة"
+                    }
+                    title={
+                      img.dbItem.visibility === "public" ? "عامة — اضغط للإخفاء" : "خاصة — اضغط للإظهار"
+                    }
+                  >
+                    {img.dbItem.visibility === "public" ? (
+                      <Globe className="h-4 w-4" />
+                    ) : (
+                      <Lock className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              )}
+              {unlocked && img.dbItem?.visibility === "private" && (
+                <div className="absolute top-2 right-2 z-10 rounded-full bg-background/80 px-2 py-1 backdrop-blur flex items-center gap-1 text-xs font-body-ar text-gold">
+                  <Lock className="h-3 w-3" /> خاصة
+                </div>
               )}
             </div>
           ))}
         </div>
       </section>
+
 
 
       {/* ============== VIDEOS ============== */}
@@ -410,13 +461,30 @@ function Index() {
                     </p>
                   )}
                   {unlocked && v.dbItem && (
-                    <button
-                      type="button"
-                      onClick={() => deleteMedia(v.dbItem!)}
-                      className="mt-3 inline-flex items-center gap-2 rounded-full border border-destructive/50 bg-destructive/10 px-4 py-1.5 font-body-ar text-xs text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
-                    >
-                      <Trash2 className="h-3 w-3" /> حذف
-                    </button>
+                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => toggleVisibility(v.dbItem!)}
+                        className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-gold/10 px-4 py-1.5 font-body-ar text-xs text-gold transition-colors hover:bg-gold hover:text-primary-foreground"
+                      >
+                        {v.dbItem.visibility === "public" ? (
+                          <>
+                            <Globe className="h-3 w-3" /> عامة — اضغط للإخفاء
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="h-3 w-3" /> خاصة — اضغط للإظهار
+                          </>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteMedia(v.dbItem!)}
+                        className="inline-flex items-center gap-2 rounded-full border border-destructive/50 bg-destructive/10 px-4 py-1.5 font-body-ar text-xs text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <Trash2 className="h-3 w-3" /> حذف
+                      </button>
+                    </div>
                   )}
                 </figcaption>
               </figure>
