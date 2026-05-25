@@ -41,6 +41,7 @@ type DbMedia = {
   type: "image" | "video";
   caption: string | null;
   uploader: string | null;
+  visibility: "public" | "private";
   created_at: string;
 };
 
