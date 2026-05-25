@@ -49,6 +49,7 @@ type GalleryItem = {
   src: string;
   caption?: string;
   uploader?: string;
+  dbItem?: DbMedia;
 };
 
 type VideoItem = {
