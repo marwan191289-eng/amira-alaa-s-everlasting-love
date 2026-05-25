@@ -57,6 +57,7 @@ type VideoItem = {
   url: string;
   title?: string;
   uploader?: string;
+  dbItem?: DbMedia;
 };
 
 const STORAGE_BUCKET = "wedding-media";
