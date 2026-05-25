@@ -101,6 +101,31 @@ function publicUrl(path: string) {
 function Index() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [dbMedia, setDbMedia] = useState<DbMedia[]>([]);
+  const [unlocked, setUnlocked] = useState(false);
+
+  useEffect(() => {
+    setUnlocked(isUnlocked());
+  }, []);
+
+  const handleLock = () => {
+    lock();
+    setUnlocked(false);
+  };
+
+  const deleteMedia = useCallback(
+    async (item: DbMedia) => {
+      if (!unlocked) return;
+      if (!confirm("هل أنت متأكد من حذف هذه الذكرى؟")) return;
+      await supabase.storage.from(STORAGE_BUCKET).remove([item.path]);
+      const { error } = await supabase.from("media").delete().eq("id", item.id);
+      if (error) {
+        alert("تعذر الحذف: " + error.message);
+        return;
+      }
+      setDbMedia((prev) => prev.filter((m) => m.id !== item.id));
+    },
+    [unlocked],
+  );
 
   const fetchMedia = useCallback(async () => {
     const { data, error } = await supabase
