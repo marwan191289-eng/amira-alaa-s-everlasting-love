@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MediaUploader } from "@/components/MediaUploader";
-import { Play, Trash2, Lock } from "lucide-react";
+import { Play, Trash2, Lock, Globe } from "lucide-react";
 import { PasswordGate } from "@/components/PasswordGate";
 import { isUnlocked, lock } from "@/lib/wedding-auth";
 import heroBg from "@/assets/hero-bg.jpg";
