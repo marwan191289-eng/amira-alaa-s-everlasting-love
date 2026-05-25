@@ -3,7 +3,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MediaUploader } from "@/components/MediaUploader";
-import { Play } from "lucide-react";
+import { Play, Trash2, Lock } from "lucide-react";
+import { PasswordGate } from "@/components/PasswordGate";
+import { isUnlocked, lock } from "@/lib/wedding-auth";
 import heroBg from "@/assets/hero-bg.jpg";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
@@ -47,6 +49,7 @@ type GalleryItem = {
   src: string;
   caption?: string;
   uploader?: string;
+  dbItem?: DbMedia;
 };
 
 type VideoItem = {
@@ -54,6 +57,7 @@ type VideoItem = {
   url: string;
   title?: string;
   uploader?: string;
+  dbItem?: DbMedia;
 };
 
 const STORAGE_BUCKET = "wedding-media";
@@ -99,6 +103,31 @@ function publicUrl(path: string) {
 function Index() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [dbMedia, setDbMedia] = useState<DbMedia[]>([]);
+  const [unlocked, setUnlocked] = useState(false);
+
+  useEffect(() => {
+    setUnlocked(isUnlocked());
+  }, []);
+
+  const handleLock = () => {
+    lock();
+    setUnlocked(false);
+  };
+
+  const deleteMedia = useCallback(
+    async (item: DbMedia) => {
+      if (!unlocked) return;
+      if (!confirm("هل أنت متأكد من حذف هذه الذكرى؟")) return;
+      await supabase.storage.from(STORAGE_BUCKET).remove([item.path]);
+      const { error } = await supabase.from("media").delete().eq("id", item.id);
+      if (error) {
+        alert("تعذر الحذف: " + error.message);
+        return;
+      }
+      setDbMedia((prev) => prev.filter((m) => m.id !== item.id));
+    },
+    [unlocked],
+  );
 
   const fetchMedia = useCallback(async () => {
     const { data, error } = await supabase
@@ -132,6 +161,7 @@ function Index() {
           src: publicUrl(m.path),
           caption: m.caption ?? undefined,
           uploader: m.uploader ?? undefined,
+          dbItem: m,
         })),
     [dbMedia],
   );
@@ -145,6 +175,7 @@ function Index() {
           url: publicUrl(m.path),
           title: m.caption ?? "ذكرى من العرس",
           uploader: m.uploader ?? undefined,
+          dbItem: m,
         })),
     [dbMedia],
   );
@@ -244,8 +275,24 @@ function Index() {
           </h3>
           <div className="mx-auto mt-4 h-px w-20 gold-divider" />
         </div>
-        <MediaUploader onUploaded={fetchMedia} />
+        {unlocked ? (
+          <>
+            <MediaUploader onUploaded={fetchMedia} />
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={handleLock}
+                className="inline-flex items-center gap-2 text-xs font-body-ar text-muted-foreground hover:text-gold transition-colors"
+              >
+                <Lock className="h-3 w-3" /> قفل المساحة
+              </button>
+            </div>
+          </>
+        ) : (
+          <PasswordGate onUnlocked={() => setUnlocked(true)} />
+        )}
       </section>
+
 
       {/* ============== GALLERY ============== */}
       <section id="gallery" className="mx-auto max-w-6xl px-6 py-20">
@@ -266,35 +313,51 @@ function Index() {
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
           {allImages.map((img) => (
-            <button
+            <div
               key={img.id}
-              type="button"
-              onClick={() => setLightbox(img.src)}
               className="group relative aspect-square overflow-hidden rounded-2xl border border-gold/30 bg-card shadow-elegant transition-all hover:border-gold hover:shadow-glow"
             >
-              <img
-                src={img.src}
-                alt={img.caption ?? "صورة من العرس"}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/0 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-              {(img.caption || img.uploader) && (
-                <div className="absolute bottom-0 right-0 left-0 p-4 text-right opacity-0 transition-opacity group-hover:opacity-100">
-                  {img.caption && (
-                    <p className="font-display-ar text-sm text-gold">{img.caption}</p>
-                  )}
-                  {img.uploader && (
-                    <p className="font-body-ar text-xs text-muted-foreground">
-                      — {img.uploader}
-                    </p>
-                  )}
-                </div>
+              <button
+                type="button"
+                onClick={() => setLightbox(img.src)}
+                className="absolute inset-0 h-full w-full"
+                aria-label="عرض الصورة"
+              >
+                <img
+                  src={img.src}
+                  alt={img.caption ?? "صورة من العرس"}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/0 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                {(img.caption || img.uploader) && (
+                  <div className="absolute bottom-0 right-0 left-0 p-4 text-right opacity-0 transition-opacity group-hover:opacity-100">
+                    {img.caption && (
+                      <p className="font-display-ar text-sm text-gold">{img.caption}</p>
+                    )}
+                    {img.uploader && (
+                      <p className="font-body-ar text-xs text-muted-foreground">
+                        — {img.uploader}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </button>
+              {unlocked && img.dbItem && (
+                <button
+                  type="button"
+                  onClick={() => deleteMedia(img.dbItem!)}
+                  className="absolute top-2 left-2 z-10 rounded-full bg-background/80 p-2 text-destructive opacity-0 backdrop-blur transition-all hover:bg-destructive hover:text-destructive-foreground group-hover:opacity-100"
+                  aria-label="حذف"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </section>
+
 
       {/* ============== VIDEOS ============== */}
       <section className="mx-auto max-w-5xl px-6 py-20">
@@ -345,6 +408,15 @@ function Index() {
                     <p className="mt-1 font-body-ar text-xs text-muted-foreground">
                       — {v.uploader}
                     </p>
+                  )}
+                  {unlocked && v.dbItem && (
+                    <button
+                      type="button"
+                      onClick={() => deleteMedia(v.dbItem!)}
+                      className="mt-3 inline-flex items-center gap-2 rounded-full border border-destructive/50 bg-destructive/10 px-4 py-1.5 font-body-ar text-xs text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <Trash2 className="h-3 w-3" /> حذف
+                    </button>
                   )}
                 </figcaption>
               </figure>
