@@ -313,35 +313,51 @@ function Index() {
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
           {allImages.map((img) => (
-            <button
+            <div
               key={img.id}
-              type="button"
-              onClick={() => setLightbox(img.src)}
               className="group relative aspect-square overflow-hidden rounded-2xl border border-gold/30 bg-card shadow-elegant transition-all hover:border-gold hover:shadow-glow"
             >
-              <img
-                src={img.src}
-                alt={img.caption ?? "صورة من العرس"}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/0 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-              {(img.caption || img.uploader) && (
-                <div className="absolute bottom-0 right-0 left-0 p-4 text-right opacity-0 transition-opacity group-hover:opacity-100">
-                  {img.caption && (
-                    <p className="font-display-ar text-sm text-gold">{img.caption}</p>
-                  )}
-                  {img.uploader && (
-                    <p className="font-body-ar text-xs text-muted-foreground">
-                      — {img.uploader}
-                    </p>
-                  )}
-                </div>
+              <button
+                type="button"
+                onClick={() => setLightbox(img.src)}
+                className="absolute inset-0 h-full w-full"
+                aria-label="عرض الصورة"
+              >
+                <img
+                  src={img.src}
+                  alt={img.caption ?? "صورة من العرس"}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/0 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                {(img.caption || img.uploader) && (
+                  <div className="absolute bottom-0 right-0 left-0 p-4 text-right opacity-0 transition-opacity group-hover:opacity-100">
+                    {img.caption && (
+                      <p className="font-display-ar text-sm text-gold">{img.caption}</p>
+                    )}
+                    {img.uploader && (
+                      <p className="font-body-ar text-xs text-muted-foreground">
+                        — {img.uploader}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </button>
+              {unlocked && img.dbItem && (
+                <button
+                  type="button"
+                  onClick={() => deleteMedia(img.dbItem!)}
+                  className="absolute top-2 left-2 z-10 rounded-full bg-background/80 p-2 text-destructive opacity-0 backdrop-blur transition-all hover:bg-destructive hover:text-destructive-foreground group-hover:opacity-100"
+                  aria-label="حذف"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </section>
+
 
       {/* ============== VIDEOS ============== */}
       <section className="mx-auto max-w-5xl px-6 py-20">
