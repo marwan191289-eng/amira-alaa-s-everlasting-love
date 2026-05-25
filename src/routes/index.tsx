@@ -175,6 +175,7 @@ function Index() {
           url: publicUrl(m.path),
           title: m.caption ?? "ذكرى من العرس",
           uploader: m.uploader ?? undefined,
+          dbItem: m,
         })),
     [dbMedia],
   );
