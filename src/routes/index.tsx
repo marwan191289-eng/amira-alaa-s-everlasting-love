@@ -160,6 +160,7 @@ function Index() {
           src: publicUrl(m.path),
           caption: m.caption ?? undefined,
           uploader: m.uploader ?? undefined,
+          dbItem: m,
         })),
     [dbMedia],
   );
