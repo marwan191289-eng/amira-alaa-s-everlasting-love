@@ -275,8 +275,24 @@ function Index() {
           </h3>
           <div className="mx-auto mt-4 h-px w-20 gold-divider" />
         </div>
-        <MediaUploader onUploaded={fetchMedia} />
+        {unlocked ? (
+          <>
+            <MediaUploader onUploaded={fetchMedia} />
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={handleLock}
+                className="inline-flex items-center gap-2 text-xs font-body-ar text-muted-foreground hover:text-gold transition-colors"
+              >
+                <Lock className="h-3 w-3" /> قفل المساحة
+              </button>
+            </div>
+          </>
+        ) : (
+          <PasswordGate onUnlocked={() => setUnlocked(true)} />
+        )}
       </section>
+
 
       {/* ============== GALLERY ============== */}
       <section id="gallery" className="mx-auto max-w-6xl px-6 py-20">
