@@ -409,6 +409,15 @@ function Index() {
                       — {v.uploader}
                     </p>
                   )}
+                  {unlocked && v.dbItem && (
+                    <button
+                      type="button"
+                      onClick={() => deleteMedia(v.dbItem!)}
+                      className="mt-3 inline-flex items-center gap-2 rounded-full border border-destructive/50 bg-destructive/10 px-4 py-1.5 font-body-ar text-xs text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <Trash2 className="h-3 w-3" /> حذف
+                    </button>
+                  )}
                 </figcaption>
               </figure>
             ))}
