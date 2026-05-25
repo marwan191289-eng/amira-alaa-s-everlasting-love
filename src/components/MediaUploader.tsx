@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Upload, Loader2, ImagePlus } from "lucide-react";
+import { Upload, Loader2, ImagePlus, Globe, Lock } from "lucide-react";
 
 interface Props {
   onUploaded?: () => void;
 }
+
+type Visibility = "public" | "private";
 
 export function MediaUploader({ onUploaded }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -12,6 +14,7 @@ export function MediaUploader({ onUploaded }: Props) {
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [uploader, setUploader] = useState("");
   const [caption, setCaption] = useState("");
+  const [visibility, setVisibility] = useState<Visibility>("public");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
