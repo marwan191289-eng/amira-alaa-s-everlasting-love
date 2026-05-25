@@ -461,13 +461,30 @@ function Index() {
                     </p>
                   )}
                   {unlocked && v.dbItem && (
-                    <button
-                      type="button"
-                      onClick={() => deleteMedia(v.dbItem!)}
-                      className="mt-3 inline-flex items-center gap-2 rounded-full border border-destructive/50 bg-destructive/10 px-4 py-1.5 font-body-ar text-xs text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
-                    >
-                      <Trash2 className="h-3 w-3" /> حذف
-                    </button>
+                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => toggleVisibility(v.dbItem!)}
+                        className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-gold/10 px-4 py-1.5 font-body-ar text-xs text-gold transition-colors hover:bg-gold hover:text-primary-foreground"
+                      >
+                        {v.dbItem.visibility === "public" ? (
+                          <>
+                            <Globe className="h-3 w-3" /> عامة — اضغط للإخفاء
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="h-3 w-3" /> خاصة — اضغط للإظهار
+                          </>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteMedia(v.dbItem!)}
+                        className="inline-flex items-center gap-2 rounded-full border border-destructive/50 bg-destructive/10 px-4 py-1.5 font-body-ar text-xs text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <Trash2 className="h-3 w-3" /> حذف
+                      </button>
+                    </div>
                   )}
                 </figcaption>
               </figure>
