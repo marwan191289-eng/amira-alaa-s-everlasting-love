@@ -130,6 +130,26 @@ function Index() {
     [unlocked],
   );
 
+  const toggleVisibility = useCallback(
+    async (item: DbMedia) => {
+      if (!unlocked) return;
+      const next: "public" | "private" =
+        item.visibility === "public" ? "private" : "public";
+      const { error } = await supabase
+        .from("media")
+        .update({ visibility: next })
+        .eq("id", item.id);
+      if (error) {
+        alert("تعذر تغيير الحالة: " + error.message);
+        return;
+      }
+      setDbMedia((prev) =>
+        prev.map((m) => (m.id === item.id ? { ...m, visibility: next } : m)),
+      );
+    },
+    [unlocked],
+  );
+
   const fetchMedia = useCallback(async () => {
     const { data, error } = await supabase
       .from("media")
