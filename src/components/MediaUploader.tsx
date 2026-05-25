@@ -42,6 +42,7 @@ export function MediaUploader({ onUploaded }: Props) {
           type: isVideo ? "video" : "image",
           caption: caption || null,
           uploader: uploader || null,
+          visibility,
         });
         if (dbErr) throw dbErr;
 
