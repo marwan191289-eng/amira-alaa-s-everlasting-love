@@ -173,9 +173,14 @@ function Index() {
     };
   }, [fetchMedia]);
 
+  const visibleMedia = useMemo(
+    () => (unlocked ? dbMedia : dbMedia.filter((m) => m.visibility === "public")),
+    [dbMedia, unlocked],
+  );
+
   const uploadedImages: GalleryItem[] = useMemo(
     () =>
-      dbMedia
+      visibleMedia
         .filter((m) => m.type === "image")
         .map((m) => ({
           id: m.id,
@@ -184,12 +189,12 @@ function Index() {
           uploader: m.uploader ?? undefined,
           dbItem: m,
         })),
-    [dbMedia],
+    [visibleMedia],
   );
 
   const uploadedVideos: VideoItem[] = useMemo(
     () =>
-      dbMedia
+      visibleMedia
         .filter((m) => m.type === "video")
         .map((m) => ({
           id: m.id,
@@ -198,7 +203,7 @@ function Index() {
           uploader: m.uploader ?? undefined,
           dbItem: m,
         })),
-    [dbMedia],
+    [visibleMedia],
   );
 
   const allImages = [...uploadedImages, ...seedImages];
