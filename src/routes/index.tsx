@@ -370,19 +370,44 @@ function Index() {
                 )}
               </button>
               {unlocked && img.dbItem && (
-                <button
-                  type="button"
-                  onClick={() => deleteMedia(img.dbItem!)}
-                  className="absolute top-2 left-2 z-10 rounded-full bg-background/80 p-2 text-destructive opacity-0 backdrop-blur transition-all hover:bg-destructive hover:text-destructive-foreground group-hover:opacity-100"
-                  aria-label="حذف"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 opacity-0 transition-all group-hover:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => deleteMedia(img.dbItem!)}
+                    className="rounded-full bg-background/80 p-2 text-destructive backdrop-blur transition-all hover:bg-destructive hover:text-destructive-foreground"
+                    aria-label="حذف"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleVisibility(img.dbItem!)}
+                    className="rounded-full bg-background/80 p-2 text-gold backdrop-blur transition-all hover:bg-gold hover:text-primary-foreground"
+                    aria-label={
+                      img.dbItem.visibility === "public" ? "اجعلها خاصة" : "اجعلها عامة"
+                    }
+                    title={
+                      img.dbItem.visibility === "public" ? "عامة — اضغط للإخفاء" : "خاصة — اضغط للإظهار"
+                    }
+                  >
+                    {img.dbItem.visibility === "public" ? (
+                      <Globe className="h-4 w-4" />
+                    ) : (
+                      <Lock className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              )}
+              {unlocked && img.dbItem?.visibility === "private" && (
+                <div className="absolute top-2 right-2 z-10 rounded-full bg-background/80 px-2 py-1 backdrop-blur flex items-center gap-1 text-xs font-body-ar text-gold">
+                  <Lock className="h-3 w-3" /> خاصة
+                </div>
               )}
             </div>
           ))}
         </div>
       </section>
+
 
 
       {/* ============== VIDEOS ============== */}
