@@ -301,21 +301,36 @@ function Index() {
         </div>
       </header>
 
-      {/* ============== CELEBRATION ============== */}
-      <section className="mx-auto max-w-4xl px-6 py-24 text-center">
+      {/* ============== PROSE / REFLECTION ============== */}
+      <section className="mx-auto max-w-3xl px-6 py-24 text-center">
         <p className="font-display tracking-[0.4em] text-xs text-gold/80 uppercase">
-          Celebration
+          A Reflection
         </p>
-        <h2 className="mt-4 font-display-ar text-4xl font-bold text-gradient-gold md:text-5xl">
-          احتفالٌ بالأميرة أميرة
+        <h2 className="mt-4 font-display-ar text-3xl font-bold text-gradient-gold md:text-4xl">
+          نَثرٌ من القلب
         </h2>
         <div className="mx-auto mt-6 h-px w-24 gold-divider" />
-        <p className="mt-8 font-body-ar text-lg leading-loose text-muted-foreground">
-          في هذا اليوم المبارك، نجتمع — ولو من بعيد — لنحتفي بكِ يا أميرة، وبشريك
-          عمركِ علاء. هذا الموقع هديّة من القلب: مرجعٌ تعودين إليه دائماً لترَيْ
-          كم أنتِ محبوبة، وكم كانت لحظات يومكِ ساحرة.
+        <p className="mt-10 whitespace-pre-line font-body-ar text-base leading-loose text-foreground/85 md:text-lg">
+{`يُقالُ إن البشرَ يولدون على فطرةِ ما يعيشون،
+فهل قُتلَ لأنه كذا؟ لا، فوالله قُتلَ لأنه وُلد على فطرةِ القتل.
+لا لظُلمةٍ أو نورٍ في العقلِ متى كان،
+فقلبٌ ينبضُ بجُبنٍ كقلبِ الشجعان،
+والتشبيهُ هنا للنبضِ لا القلوبِ يا إنسان.
+
+ولمّا كانت الدابةُ التي تعقلُ أفضلَ من قاتلِ الفطرة،
+لمّا رفعت حافرها عن وليدها خشيةَ أن تُصيبه،
+دابةٌ لا تعقلُ خشيت، فظهرت عظمةُ قدرةِ الله.
+
+أوصيكَ يا ولدي برحمةِ خلقِ الله،
+أيجبُ أن نُصبحَ دابةً لترحمَ وتصفحَ وتعفو؟
+سامحْ لتُسامح، اصفحْ لكي يُصفح عنك.
+
+واعلمْ أن غطاءَ سترِ الله كمقدارِ ذرة،
+حافظوا على ستركم وسرّكم حتى لا يضيع غطاءكم.`}
         </p>
+        <p className="mt-8 font-display-ar text-sm text-gold/80">— من القلبِ إلى القلب</p>
       </section>
+
 
       {/* ============== SHARE / UPLOAD ============== */}
       <section id="share" className="mx-auto max-w-3xl px-6 py-12">
