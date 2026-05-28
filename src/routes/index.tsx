@@ -213,6 +213,8 @@ function Index() {
   return (
     <div className="min-h-screen text-foreground">
       <SplashScreen />
+      <ThemeSwitcher />
+      <SideColumns images={allImages.slice(0, 12).map((i) => i.src)} />
 
       {/* ============== HERO ============== */}
       <header className="relative isolate overflow-hidden">
@@ -250,15 +252,38 @@ function Index() {
 
           <div className="mx-auto mt-10 h-px w-40 gold-divider" />
 
-          <p className="ornament mx-auto mt-8 max-w-2xl font-body-ar text-lg text-muted-foreground md:text-xl">
-            حكاية حب تبدأ، ومرجعٌ خالد لذكرى الفرح
-          </p>
+          <div className="mx-auto mt-10 max-w-3xl space-y-6 font-body-ar text-base leading-loose text-foreground/85 md:text-lg fade-in-up">
+            <p className="ornament">
+              هنا تبدأ حكاية — تكتبها الذكريات وترويها القلوب
+            </p>
+            <p>
+              قصةُ حبٍّ تُفتَح صفحتُها الأولى،
+              <br />
+              وفصلٌ جديد يُكتب بحروفٍ من الذهب
+              <br />
+              لروايةٍ لامعٍ سطعَ بريقها
+              <br />
+              حتى رآها الكفيفُ في وضح النهار،
+              <br />
+              وسمعَ لحنَها الأصمُّ في أحلكِ عتمةٍ وظلام.
+            </p>
+            <p className="text-gold">
+              هنا يولدُ الحبُّ الجديد…
+              <br />
+              ذكرى تشهد… حكاية تبقى،
+              <br />
+              لتُضيءَ عيوناً مُظلمة، وروحاً هائمة، وقلوباً لا نابضة.
+            </p>
+            <p className="text-muted-foreground">
+              فيا لعظمةِ الحبِّ وقسوته… نورٍ في الظلام… وظلامٍ في النور.
+            </p>
+          </div>
 
-          <p className="mt-6 font-display tracking-widest text-sm text-gold/80">
+          <p className="mt-10 font-display tracking-widest text-sm text-gold/80">
             ٢٠٢٦
           </p>
 
-          <div className="mt-14 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
             <a
               href="#gallery"
               className="inline-flex items-center gap-3 rounded-full border border-gold/60 bg-card/40 px-8 py-3 font-body-ar text-base text-gold backdrop-blur transition-all hover:bg-gold hover:text-primary-foreground hover:shadow-glow"
