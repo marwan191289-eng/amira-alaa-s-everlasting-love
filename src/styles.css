@@ -160,4 +160,19 @@
     from { background-position: 200% 0; }
     to   { background-position: -200% 0; }
   }
+
+  .animate-marquee-up {
+    animation: marqueeUp 55s linear infinite;
+  }
+  .animate-marquee-down {
+    animation: marqueeDown 55s linear infinite;
+  }
+  @keyframes marqueeUp {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-50%); }
+  }
+  @keyframes marqueeDown {
+    from { transform: translateY(-50%); }
+    to   { transform: translateY(0); }
+  }
 }

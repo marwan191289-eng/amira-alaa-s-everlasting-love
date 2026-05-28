@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MediaUploader } from "@/components/MediaUploader";
+import { SideColumns } from "@/components/SideColumns";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Play, Trash2, Lock, Globe } from "lucide-react";
 import { PasswordGate } from "@/components/PasswordGate";
 import { isUnlocked, lock } from "@/lib/wedding-auth";
@@ -211,6 +213,8 @@ function Index() {
   return (
     <div className="min-h-screen text-foreground">
       <SplashScreen />
+      <ThemeSwitcher />
+      <SideColumns images={allImages.slice(0, 12).map((i) => i.src)} />
 
       {/* ============== HERO ============== */}
       <header className="relative isolate overflow-hidden">
@@ -248,15 +252,38 @@ function Index() {
 
           <div className="mx-auto mt-10 h-px w-40 gold-divider" />
 
-          <p className="ornament mx-auto mt-8 max-w-2xl font-body-ar text-lg text-muted-foreground md:text-xl">
-            حكاية حب تبدأ، ومرجعٌ خالد لذكرى الفرح
-          </p>
+          <div className="mx-auto mt-10 max-w-3xl space-y-6 font-body-ar text-base leading-loose text-foreground/85 md:text-lg fade-in-up">
+            <p className="ornament">
+              هنا تبدأ حكاية — تكتبها الذكريات وترويها القلوب
+            </p>
+            <p>
+              قصةُ حبٍّ تُفتَح صفحتُها الأولى،
+              <br />
+              وفصلٌ جديد يُكتب بحروفٍ من الذهب
+              <br />
+              لروايةٍ لامعٍ سطعَ بريقها
+              <br />
+              حتى رآها الكفيفُ في وضح النهار،
+              <br />
+              وسمعَ لحنَها الأصمُّ في أحلكِ عتمةٍ وظلام.
+            </p>
+            <p className="text-gold">
+              هنا يولدُ الحبُّ الجديد…
+              <br />
+              ذكرى تشهد… حكاية تبقى،
+              <br />
+              لتُضيءَ عيوناً مُظلمة، وروحاً هائمة، وقلوباً لا نابضة.
+            </p>
+            <p className="text-muted-foreground">
+              فيا لعظمةِ الحبِّ وقسوته… نورٍ في الظلام… وظلامٍ في النور.
+            </p>
+          </div>
 
-          <p className="mt-6 font-display tracking-widest text-sm text-gold/80">
+          <p className="mt-10 font-display tracking-widest text-sm text-gold/80">
             ٢٠٢٦
           </p>
 
-          <div className="mt-14 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
             <a
               href="#gallery"
               className="inline-flex items-center gap-3 rounded-full border border-gold/60 bg-card/40 px-8 py-3 font-body-ar text-base text-gold backdrop-blur transition-all hover:bg-gold hover:text-primary-foreground hover:shadow-glow"
@@ -274,21 +301,36 @@ function Index() {
         </div>
       </header>
 
-      {/* ============== CELEBRATION ============== */}
-      <section className="mx-auto max-w-4xl px-6 py-24 text-center">
+      {/* ============== PROSE / REFLECTION ============== */}
+      <section className="mx-auto max-w-3xl px-6 py-24 text-center">
         <p className="font-display tracking-[0.4em] text-xs text-gold/80 uppercase">
-          Celebration
+          A Reflection
         </p>
-        <h2 className="mt-4 font-display-ar text-4xl font-bold text-gradient-gold md:text-5xl">
-          احتفالٌ بالأميرة أميرة
+        <h2 className="mt-4 font-display-ar text-3xl font-bold text-gradient-gold md:text-4xl">
+          نَثرٌ من القلب
         </h2>
         <div className="mx-auto mt-6 h-px w-24 gold-divider" />
-        <p className="mt-8 font-body-ar text-lg leading-loose text-muted-foreground">
-          في هذا اليوم المبارك، نجتمع — ولو من بعيد — لنحتفي بكِ يا أميرة، وبشريك
-          عمركِ علاء. هذا الموقع هديّة من القلب: مرجعٌ تعودين إليه دائماً لترَيْ
-          كم أنتِ محبوبة، وكم كانت لحظات يومكِ ساحرة.
+        <p className="mt-10 whitespace-pre-line font-body-ar text-base leading-loose text-foreground/85 md:text-lg">
+{`يُقالُ إن البشرَ يولدون على فطرةِ ما يعيشون،
+فهل قُتلَ لأنه كذا؟ لا، فوالله قُتلَ لأنه وُلد على فطرةِ القتل.
+لا لظُلمةٍ أو نورٍ في العقلِ متى كان،
+فقلبٌ ينبضُ بجُبنٍ كقلبِ الشجعان،
+والتشبيهُ هنا للنبضِ لا القلوبِ يا إنسان.
+
+ولمّا كانت الدابةُ التي تعقلُ أفضلَ من قاتلِ الفطرة،
+لمّا رفعت حافرها عن وليدها خشيةَ أن تُصيبه،
+دابةٌ لا تعقلُ خشيت، فظهرت عظمةُ قدرةِ الله.
+
+أوصيكَ يا ولدي برحمةِ خلقِ الله،
+أيجبُ أن نُصبحَ دابةً لترحمَ وتصفحَ وتعفو؟
+سامحْ لتُسامح، اصفحْ لكي يُصفح عنك.
+
+واعلمْ أن غطاءَ سترِ الله كمقدارِ ذرة،
+حافظوا على ستركم وسرّكم حتى لا يضيع غطاءكم.`}
         </p>
+        <p className="mt-8 font-display-ar text-sm text-gold/80">— من القلبِ إلى القلب</p>
       </section>
+
 
       {/* ============== SHARE / UPLOAD ============== */}
       <section id="share" className="mx-auto max-w-3xl px-6 py-12">
